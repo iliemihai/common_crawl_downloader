@@ -19,7 +19,8 @@ args = parser.parse_args()
 #if path.exists(args.tmp_dir):
 #    rmtree(args.tmp_dir)
 
-mkdir(args.tmp_dir)
+if not path.exists(args.tmp_dir):
+    mkdir(args.tmp_dir)
 
 tmp_download_dir = path.join(args.tmp_dir, "downloads")
 
@@ -48,7 +49,8 @@ def do_parallel_pipeline_processing(dirs_awaiting_processing):
 # Instead, we do this so that we will have num_proc number of output files so we can load them in parallel into a 
 # pandas dataframes, which will eventually be turned into Hugging Face dataset.
 ungoliant_pipeline_results = path.join(args.tmp_dir, "ungoliant_pipeline_results")
-mkdir(ungoliant_pipeline_results)
+if not path.exists(ungoliant_pipeline_results):
+    mkdir(ungoliant_pipeline_results)
 for i in range(len(filename_per_directory)):
     download_chunk_dir = path.join(tmp_download_dir, "chunk_" + str(i))
     mkdir(download_chunk_dir)
