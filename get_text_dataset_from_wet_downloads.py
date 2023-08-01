@@ -96,6 +96,8 @@ for p in processes:
     p.join()
 
 data_files = {language_id: [path.join(ungoliant_pipeline_output_dir, language_id + "_parquet", "*.parquet") for ungoliant_pipeline_output_dir in ungoliant_pipeline_output_dirs] for language_id in language_ids}
+
+
 ds = load_dataset("parquet", data_files=data_files)
 ds.save_to_disk(args.output_dataset_name)
 rmtree(args.tmp_dir)

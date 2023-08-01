@@ -1,6 +1,7 @@
 from os import mkdir, path
 from subprocess import run
 import argparse
+from tqdm import tqdm
 import random
 
 parser = argparse.ArgumentParser(description="Downloads raw Common Crawl WET files, or WAT files if you specify --paths_type=wat.")
@@ -15,14 +16,15 @@ args = parser.parse_args()
 
 random.seed(args.seed)
 
-if path.exists(args.download_dir):
-    run(f"rm -r {args.download_dir}", shell=True)
+#if path.exists(args.download_dir):
+#    run(f"rm -r {args.download_dir}", shell=True)
 
-if path.exists(args.tmp_dir):
-    run(f"rm -r {args.tmp_dir}", shell=True)
+#if path.exists(args.tmp_dir):
+#    run(f"rm -r {args.tmp_dir}", shell=True)
 
 run(f"mkdir {args.download_dir} {args.tmp_dir}", shell=True)
-for index in range(len(args.snapshots)):
+
+for index in tqdm(range(len(args.snapshots))):
     # Download the data for a certian common crawl snapshot
     tmp_download_dir_name = f"{args.tmp_dir}/ungoliant_downloads-{args.snapshots[index]}"
     run(f"mkdir {tmp_download_dir_name}", shell=True)
@@ -37,7 +39,7 @@ for index in range(len(args.snapshots)):
             kept_segments.append(segment)
     open(paths_name, "w").writelines(kept_segments)
     run(f"ungoliant download -t={args.num_proc} {paths_name} {tmp_download_dir_name}", shell=True)
-    run(f"rm {paths_name}", shell=True)
+    #run(f"rm {paths_name}", shell=True)
 
     # Now, add 0's to the filename for every downloaded file. We want the number of 0's to be different than those from another common crawl snapshot
     # because we want every file to have a unique name accross multiple snapshot downloads.
@@ -46,8 +48,8 @@ for index in range(len(args.snapshots)):
 
     # Now we can move the downloaded files into the main download dir which has the downloads from the rest of this for loop.
     run(f"mv {tmp_download_dir_name}/* {args.download_dir}/", shell=True)
-    run(f"rm -r {tmp_download_dir_name}", shell=True)
+    #run(f"rm -r {tmp_download_dir_name}", shell=True)
 
-run(f"rm -r {args.tmp_dir}", shell=True)
-run("rm -r errors.txt", shell=True)
+#run(f"rm -r {args.tmp_dir}", shell=True)
+#run("rm -r errors.txt", shell=True)
 
